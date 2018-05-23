@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1"
-author: 'Your name'
+author: 'Michelle Espinosa'
 output: html_document
 ---
 
