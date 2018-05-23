@@ -1,0 +1,11 @@
+---
+title: "Assignment 1"
+author: 'Michelle Espinosa'
+output: html_document
+---
+
+
+```{r}
+plot(cars)
+```
+
