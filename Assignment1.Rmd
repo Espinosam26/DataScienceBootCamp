@@ -1,8 +1,23 @@
 ---
 title: "Assignment 1"
+title: "Allow Me to Reintroduce Myself"
 author: 'Michelle Espinosa'
 output: html_document
 ---
+### **Michelle Espinosa**
+1. I am 25 years old
+2. I am the youngest of three sisters
+3. When i was born, my nine and ten year old sisters named me after the Full House character 
+4. My parents are Colombian
+  + I am traveling to Colombia in July for a family reunion
+  +My fiances is meeting my extended family for the first time
+5. I am a Posse alumn from Miami, Mount Holyoke College Posse 1
+```{r}
+# I'm learning data science!
+```
+![michelle](Unknown.png)
+
+
 
 
 ```{r}
