@@ -1,5 +1,4 @@
 ---
-title: "Assignment 1"
 title: "Allow Me to Reintroduce Myself"
 author: 'Michelle Espinosa'
 output: html_document
@@ -7,14 +6,42 @@ output: html_document
 ### **Michelle Espinosa**
 1. I am 25 years old
 2. I am the youngest of three sisters
-3. When i was born, my nine and ten year old sisters named me after the Full House character 
+3. When i was born, my nine and ten year old sisters named me after the Full House character, Michelle Tanner
 4. My parents are Colombian
   + I am traveling to Colombia in July for a family reunion
-  +My fiances is meeting my extended family for the first time
+  + My fiances is meeting my extended family for the first time
 5. I am a Posse alumn from Miami, Mount Holyoke College Posse 1
 ```{r}
 # I'm learning data science!
 ```
+
+## Professional Background
+  + United Way of Miami-Dade
+  Program Officer, Early Education
+  April 2016 - Present
+  
+  + United Way of Miami-Dade 
+  Engagement Coordinator
+  Feb 2014 - April 2016
+  
+## Interests
+  + Gardening 
+  + Baking 
+  + Hiking 
+  + Food
+  + Music 
+  + Concerts (I saw Pulitzer Kenny last night!)
+  
+![Pulitzer Kenny, May 23, 2018 Coral Sky Amphitheatre](IMG_3345.png)
+
+![Bottom Middle: Patrick, Right: Vivienne Vicera, Left: Michelle Espinosa](IMG_0015.png)
+
+## Skill Sets 
+  + Disciplined 
+  + I'm a team player 
+  + Baking 
+  + Intuitive 
+    
 ![michelle](Unknown.png)
 
 
