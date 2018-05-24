@@ -45,11 +45,3 @@ output: html_document
   + Intuitive 
     
 ![michelle](Unknown.png)
-
-
-
-
-```{r}
-plot(cars)
-```
-
