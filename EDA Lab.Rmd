@@ -1,0 +1,247 @@
+---
+title: "EDA LAB"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+#install.packages('mlbench')
+```
+```{r}
+#install.packages("tidyverse")
+```
+```{r}
+#install.packages("Hmisc")
+library(mlbench)
+```
+```{r}
+library(tidyverse)
+```
+```{r}
+library(Hmisc)
+```
+```{r}
+data("BostonHousing2")
+```
+```{r}
+head(BostonHousing2)
+```
+
+```{r}
+tail(BostonHousing2)
+```
+
+```{r}
+nrow(BostonHousing2)
+```
+```{r}
+head(BostonHousing2, 20)
+```
+```{r}
+tail(BostonHousing2, 20)
+```
+
+```{r}
+dim(BostonHousing2)
+```
+
+```{r}
+str(BostonHousing2)
+```
+```{r}
+ncol(BostonHousing2)
+```
+
+```{r}
+nrow(BostonHousing2)
+```
+
+```{r}
+class(BostonHousing2)
+```
+
+```{r}
+sapply(BostonHousing2, class)
+```
+```{r}
+class(BostonHousing2)
+```
+
+```{r}
+sapply(BostonHousing2, class)
+```
+
+```{r}
+summary(BostonHousing2)
+```
+
+```{r}
+describe(BostonHousing2)
+```
+```{r}
+histogram(BostonHousing2$cmedv)
+```
+```{r}
+histogram(BostonHousing2$cmedv, 50)
+```
+```{r}
+hist(BostonHousing2$cmedv)
+```
+```{r}
+hist(BostonHousing2$cmedv, 20)
+```
+```{r}
+hist(BostonHousing2$cmedv, 50)
+```
+```{r}
+boxplot(BostonHousing2$cmedv)
+```
+question 1: Yes, it says it skews right and you can see the outliers in the boxplot.
+
+question 2: Pick 5 variables ad describe the distribution
+
+First Variable: Crim = per capita crim rate by town
+- the distribution is skewd right meaning that most of the towns dont experience that much crime.
+
+Second Variable: Age= the proportion of owener occupied units.
+- the distribution is skewd to the left, meaning that the majority of housing is owner occupied.
+
+Third Variable: rm= average number of rooms per dwelling 
+- the distribution is normal, it seems as though the avergae number of rooms per dwellng is between 5-8 rooms
+
+Fourth Variable: tax= full value property-tax rate
+- distribution is skewd to the left 
+
+Fith Variable: lstat
+
+```{r}
+hist(BostonHousing2$crim, 50)
+```
+
+```{r}
+boxplot(BostonHousing2$crim)
+```
+
+```{r}
+hist(BostonHousing2$age, 10)
+```
+
+```{r}
+boxplot(BostonHousing2$age)
+```
+
+```{r}
+hist(BostonHousing2$rm, 50)
+```
+
+```{r}
+boxplot(BostonHousing2$rm)
+```
+
+```{r}
+hist(BostonHousing2$tax, 20)
+```
+
+```{r}
+boxplot(BostonHousing2$tax)
+```
+
+```{r}
+hist(BostonHousing2$lstat)
+```
+
+```{r}
+boxplot(BostonHousing2$lstat)
+```
+
+```{r}
+bh_explore <- subset.data.frame(BostonHousing2, select = c(crim, zn, indus, rm, age, dis, ptratio, b, cmedv))
+```
+```{r}
+pairs(bh_explore)
+```
+```{r}
+#install.packages("corrplot")
+```
+```{r}
+library(corrplot)
+```
+```{r}
+correlation <- cor(bh_explore)
+```
+
+```{r}
+corrplot(correlation, method = "circle")
+```
+
+```{r}
+bh_explore %>%  cor() %>%
+  corrplot(method = "circle")
+```
+
+```{r}
+data(Zoo)
+```
+
+```{r}
+head(Zoo)
+```
+```{r}
+dim(Zoo)
+```
+
+```{r}
+summary(Zoo)
+```
+
+```{r}
+mean(Zoo$feathers)
+```
+
+```{r}
+table(Zoo$feathers)
+```
+
+```{r}
+data(Glass)
+```
+```{r}
+summary(Glass)
+```
+
+```{r}
+head(Glass)
+```
+
+```{r}
+Glass[,-10] %>% cor() %>%
+  corrplot(method = "circle")
+```
+
+```{r}
+#install.packages("swirl")
+```
+
