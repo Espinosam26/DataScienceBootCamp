@@ -40,6 +40,7 @@ str(BOD)
 ```{r}
 boxplot(BOD)
 ```
+
 **Notes**: Both boxplots show pretty normal distributions. Although, the boxplot for Biochemical Oxygen Demand is slightly skewed to the right. No visible outliers, yet. 
  
 ```{r}
@@ -70,7 +71,8 @@ plot(BOD)
 ```
 **Notes**: Seems like there is a positive, non-linear relationship between Time (measured in days) and BioChemical Oxygen Demand ( measure as mg/l). Therefore, if the biochemical oxygen demand is higher, that means that there is more waste in the water than there is organisms to decompose waste.
 
-
+** More Questions: What is the BOD concentration for 1mg/l of waste? 
+    + About 8.1
 
 
 
