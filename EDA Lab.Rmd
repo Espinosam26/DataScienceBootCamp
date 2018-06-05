@@ -245,3 +245,11 @@ Glass[,-10] %>% cor() %>%
 #install.packages("swirl")
 ```
 
+```{r}
+swirl::info()
+```
+```{r}
+swirl::main()
+```
+swirl
+
