@@ -4,40 +4,48 @@ author: "Michelle"
 date: "6/4/2018"
 output: html_document
 ---
-Step 1
+## **Homework Assignment**
+## Step 1.
 Select data: My first choice of data is the BOD data. 
 ```{r}
 data("BOD")
 ```
-Step 2
-Understand the Data/ Glimpse of the Data: 
-  + Description: The BOD data frame has 6 rows and 2 columns giving the biochemical oxygen demand versus time in an evaluation of water quality.
-  + This model was derived in the 1930's to test whether or not the quality of water was safe to drink or safe to be returned to a river.
-  + This data frame contains two columns: Time and Demand
-  + Summary of distribution below:
+Step 2.
+## Understand the Data/ Glimpse of the Data: 
+    + Description: The BOD data frame has 6 rows and 2 columns giving the biochemical oxygen demand versus time in an evaluation of water   quality.
+    + This model was derived in the 1930's to test whether or not the quality of water was safe to drink or safe to be returned to a river.
+    + This data frame contains two columns: Time and Demand
+    + Summary of distribution below:
 ```{r}
 summary(BOD)
 ```
-What are the Dimensions of the data frame BOD?
+## What are the Dimensions of the data frame BOD?
 ```{r}
 dim(BOD)
 ```
+## What is the Structure of the data frame BOD?
 ```{r}
 str(BOD)
 ```
-Data Type: Numeric 
- The data given: x-variable is Time and the y-variable is Biochemical Oxygen Demand 
- The questions: What is the probability that the higher rates of Biochemical Oxygen Demand denotes low or poor water quality? What is the relationship between BOD and Time in regards to water quality? 
+## Data Type = Numeric 
+  + The data given
+      + X-variable is Time and the y-variable is Biochemical Oxygen Demand 
  
-Notes: Not sure if I can work with this data because I cant derive a question by just looking at the data and defining its variables. I will try using some functions to create visuals to see what else I can determine.
+## The questions: 
+  + What is the probability that the higher rates of Biochemical Oxygen Demand denotes low or poor water quality? What is the relationship between BOD and Time in regards to water quality? 
+ 
+**Notes**: Not sure if I can work with this data because I cant derive a question by just looking at the data and defining its variables. I will try using some functions to create visuals to see what else I can determine.
+
+# BOXPLOT 
 ```{r}
 boxplot(BOD)
 ```
-Notes: Both boxplots show pretty normal distributions. Although, the boxplot for Biochemical Oxygen Demand is slightly skewed to the right. No visible outliers. 
+**Notes**: Both boxplots show pretty normal distributions. Although, the boxplot for Biochemical Oxygen Demand is slightly skewed to the right. No visible outliers, yet. 
  
 ```{r}
 str(BOD)
 ```
+## VECTORS?
 ```{r}
 x <- c(1, 2, 3, 4, 5, 7)
 ```
@@ -53,12 +61,16 @@ y <- c(8.3, 10.3, 19, 16, 15.6, 19.8)
 ```{r}
 VectorBioChemDemand <- y
 ```
-Notes: Not quite sure why I tried to create vectors...
+**Notes**: Not quite sure why I tried to create vectors...
+
+# PLOT 
 
 ```{r}
 plot(BOD)
 ```
-Notes: Seems like there is a positive, non-linear relationship between Time (measured in days) and BioChemical Oxygen Demand ( measure as mg/l). Therefore, if the biochemical oxygen demand is higher, that means that there is more waste in the water than there is organisms to decompose waste.
+**Notes**: Seems like there is a positive, non-linear relationship between Time (measured in days) and BioChemical Oxygen Demand ( measure as mg/l). Therefore, if the biochemical oxygen demand is higher, that means that there is more waste in the water than there is organisms to decompose waste.
+
+
 
 
 
