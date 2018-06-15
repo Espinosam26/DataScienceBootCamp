@@ -1,0 +1,306 @@
+---
+title: "Walk Through Example"
+author: "Michelle"
+date: "6/7/2018"
+output: html_document
+---
+
+```{r}
+install.packages("googlesheets")
+```
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(googlesheets)
+```
+
+
+```{r}
+gs_gap() %>% 
+  gs_copy(to = "Gapminder")
+```
+```{r}
+gap <- gs_title("Gapminder", verbose = FALSE)
+```
+The function above means: we are going to call the data in gapminder.
+
+```{r}
+gap
+```
+
+```{r}
+gs_ls()
+```
+
+```{r}
+gap %>% gs_browse()
+```
+using the function above i can call on any sheets/data i have on  google drive.
+
+```{r}
+africa <- gs_read(gap, ws="Africa")
+```
+```{r}
+europe <- gs_read(gap, ws="Europe")
+```
+```{r}
+glimpse(africa)
+```
+
+
+```{r}
+glimpse(europe)
+```
+
+### Directly from API
+
+```{r}
+install.packages("httr")
+```
+```{r}
+library(httr)
+```
+
+```{r}
+genes <- GET(url='https://genelab-data.ndc.nasa.gov/genelab/data/search?term=space&from=0&type=cgene,nih_geo_gse&ffield=links&fvalue=GPL16417&ffield=Data%20Source%20Accession&fvalue=GSE82255&api_key=DWhP4gQqRT8DigPNex0eLM4zoXNcCLmLH8883UU31')
+```
+
+```{r}
+names(genes)
+```
+
+```{r}
+genes_parsed <- content(genes, as='parsed', type = "application/json")
+sapply(genes_parsed, class)
+```
+
+```{r}
+class(genes_parsed)
+```
+
+```{r}
+sapply(genes_parsed, class)
+```
+
+```{r}
+sapply(genes_parsed$hits, class)
+```
+
+```{r}
+install.packages("jsonlite")
+```
+
+```{r}
+library(jsonlite)
+```
+
+```{r}
+genes_fromJSON <-fromJSON('https://genelab-data.ndc.nasa.gov/genelab/data/search?term=space&from=0&type=cgene,nih_geo_gse&ffield=links&fvalue=GPL16417&ffield=Data%20Source%20Accession&fvalue=GSE82255&api_key=DEMO_KEY')
+sapply(genes_fromJSON, class)
+```
+
+```{r}
+sapply(genes_fromJSON$hits, class)
+```
+
+
+```{r}
+metadata <- fromJSON("https://data.nasa.gov/data.json")
+```
+
+
+```{r}
+class(metadata)
+```
+
+
+```{r}
+sapply(metadata, class)
+```
+
+```{r}
+names(metadata)
+```
+
+```{r}
+names(metadata$dataset)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+glimpse(metadata$dataset)
+```
+
+```{r}
+nasa_flat <- jsonlite::flatten(metadata$dataset)
+class(nasa_flat)
+```
+
+```{r}
+dim(nasa_flat)
+```
+
+```{r}
+colnames(nasa_flat)
+```
+
+```{r}
+names(nasa_flat)
+```
+
+```{r}
+class(nasa_flat)
+```
+
+```{r}
+class(nasa_flat$keyword)
+```
+
+```{r}
+nasa_keyword <- nasa_flat %>% 
+  select(keyword, `_id.$oid`) %>% 
+  unnest()
+```
+
+```{r}
+str(nasa_keyword)
+```
+
+```{r}
+nasa_keyword %>% 
+  group_by(keyword) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+```
+
+### Web Scraping with rvest
+
+```{r}
+install.packages("rvest")
+```
+
+```{r}
+library(rvest)
+```
+
+```{r}
+url <- "https://www.amazon.com/Echo-2nd-Generation-speaker-Charcoal/product-reviews/B06XCM9LJ4/ref=cm_cr_arp_d_viewopt_sr?ie=UTF8&reviewerType=all_reviews&filterByStar=one_star&pageNumber=1"
+```
+
+```{r}
+reviews <- read_html(url) #read HTML doc
+```
+
+```{r}
+css <- ".review-text" 
+nodes <- html_nodes(reviews, css)
+text <- html_text(nodes)
+
+```
+
+```{r}
+text
+```
+
+### Step Further 
+
+```{r}
+get_reviews <- function(url_base, i, css='.review-text'){
+  x = vector()
+  for (n in 1:i){
+    reviews <- read_html(paste(url_base, n, sep=""))
+    nodes <- html_nodes(reviews, css)
+    text <- html_text(nodes)
+    x <- c(x, text)
+  }
+  return(x)
+}
+```
+
+```{r}
+url_base <- "https://www.amazon.com/Echo-2nd-Generation-speaker-Charcoal/product-reviews/B06XCM9LJ4/ref=cm_cr_arp_d_viewopt_sr?ie=UTF8&reviewerType=all_reviews&filterByStar=one_star&pageNumber="
+```
+
+```{r}
+reviews <- get_reviews(url_base, 10)
+```
+
+```{r}
+reviews_df <- as.data.frame(reviews)
+ # write_csv("reviews.csv")
+```  
+
+```{r}
+library(readr)
+```
+
+```{r}
+write_csv(reviews_df, "reviews.csv") 
+```
+
+### Neil
+
+```{r}
+install.packages("censusapi")
+```
+
+```{r}
+library(censusapi)
+```
+
+```{r}
+key = "your_key_here_its_a_long_string_of_characters"
+```
+
+```{r}
+Sys.getenv("CENSUS_KEY")
+```
+
+```{r}
+apis<-listCensusApis()
+head(apis[,1:6])
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

@@ -1,0 +1,169 @@
+---
+title: "LAB 06_05_18"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+```
+```{r}
+?read_csv
+```
+```{r}
+write_cars <- as.data.frame(mtcars) 
+write_csv(write_cars, path = "cars.csv")
+```
+```{r}
+read_csv("cars.csv")
+```
+```{r}
+install.packages("readxl")
+```
+```{r}
+library(readxl)
+```
+```{r}
+readxl_example("deaths.xls")
+```
+```{r}
+?read_excel()
+```
+```{r}
+xl_example <- readxl_example("deaths.xls")
+xls_example <- readxl_example("deaths.xlsx")
+read_excel(xl_example)
+```
+```{r}
+read_excel(xls_example)
+```
+```{r}
+read_excel(xls_example, skip = 4)
+```
+```{r}
+excel_sheets(xl_example)
+```
+```{r}
+install.packages("writexl")
+```
+```{r}
+library(writexl)
+```
+```{r}  
+write_xlsx(mtcars, path= 'cars.xlsx')
+```
+
+## Exercises
+1.What functions would you use to read a file where feilds were seperated with |? 
+    +read.table()
+    
+2.Apart from file, skip, and comment, what other arguments do read_csv() and read_tsv() have in common?
+
+3.What are the most important arguments to read_fwf()?
+
+## Open Miami-Dade Data Lab
+
+```{r}
+service_data <- read_csv("311_Service_Requests_-_Miami-Dade_County.csv")
+```
+```{r}
+install.packages("janitor")
+```
+```{r}
+library(janitor)
+```
+```{r}
+colnames(service_data)
+```
+```{r}
+service_data <- clean_names(service_data)
+```
+```{r}
+colnames(service_data)
+```
+## Questions
+  1.How many rows and columns are in this data?
+  ROWS: 657544 COLUMNS: 23
+```{r}
+dim(service_data)
+```
+  2.How many cities are represented in the data?
+```{r}
+library(Hmisc)
+```
+```{r}
+describe(service_data$city)
+```
+```{r}
+unique(service_data$city)
+```
+How many cities are represented in the data? 
+    + 37 (as shown in the table above)
+
+What is the most frequently occuring issue type? Hint: Use the table function.
+**PET ACCOUNT UPDATE  55455**
+
+```{r}
+table(service_data$issue_type)
+```
+
+```{r}
+ticket_status<-as.data.frame(service_data$ticket_status)
+```
+```{r}
+library(Hmisc)
+```
+```{r}
+describe(service_data$ticket_status)
+```
+## What percentage of tickets have a status of ‘CLOSED’? 
+= 9.6 percent 
+```{r}
+tickets <- table(service_data$ticket_status) %>%
+  as.data.frame()
+```
+```{r}
+colnames(tickets) <- c('Status', 'Count')
+```
+```{r}
+colnames(tickets)
+```
+```{r}
+tickets$Count
+```
+
+```{r}
+tickets$Percentage <- tickets$Count / sum(tickets$Count)
+```
+```{r}
+tickets
+```
+```{r}
+write_csv(tickets, path = "ticket_status.csv")
+```
+
+## The Meat 
+
+```{r}
+library(Hmisc)
+```
+```{r}
+library(tidyverse)
+```
+```{r}
+
+```
+
+
+You’re going to leave your work documented in an R Notebook so that you can share it with your team and they can build on it as needed.
+
+Make sure your variables related to Dates are Date data types. If they aren’t, convert them to dates with the format month/day/year.
+
+1. Create a new variable, open_30, with only tickets that are OPEN and were created more than 30 days ago.
+
+
+
+
+
+
+
+
+
