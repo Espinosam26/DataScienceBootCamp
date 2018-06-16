@@ -8,6 +8,10 @@ output: html_document
 ### Working w/ Flat Files 
 
 ```{r}
+install.packages("tidyverse")
+```
+
+```{r}
 library(tidyverse)
 ```
 ```{r}
