@@ -1,0 +1,264 @@
+---
+title: "Open Miami-Dade Data Lab"
+author: "Michelle"
+date: "6/17/2018"
+output: html_document
+---
+
+###### Open Miami-Dade Data Lab
+
+This lab will draw on your knowledge of subsetting and basic statistics with R as well as your newly learned importing and exporting techniques. As you go through the lab, you will likely need to reference documentation and support from the web. 
+
+Go to the Miami-Dade County Open Data website and download the data as a csv. Before you do anything else, make sure that if you save the file in your project directory, you include it in the .gitignore file. If you don’t do this, you’ll run into issues when you commit changes, as the file exceeds github’s maximum size allowance of 100mb. You can check that this was done correctly by checking the .gitignore file and verifying that the name of the file (should start with 311…) appears there.
+
+### Warming Up! 
+
+```{r}
+service_data <- read_csv ("11_Service_Requests_-_Miami-Dade_County.csv")
+```
+
+```{r}
+install.packages("Hmisc")
+```
+
+```{r}
+install.packages("tidyverse")
+```
+
+```{r}
+install.packages("readr")
+```
+```{r}
+library(tidyverse)
+```
+```{r}
+library(readr)
+```
+
+```{r}
+service_data <- read_csv("311_Service_Requests_-_Miami-Dade_County.csv")
+```
+
+```{r}
+library(janitor)
+```
+
+
+```{r}
+service_data <- clean_names(service_data)
+```
+
+```{r}
+colnames(service_data)
+```
+
+### **How many rows and columns are in this data?**
+```{r}
+library(Hmisc)
+```
+
+```{r}
+describe(service_data )
+```
+
+There are 657544 rows of observations and 23 coloumns.
+
+### **How many cities are represented in the data?**
+
+```{r}
+unique(service_data$city)
+```
+
+There are 37 entries under "city" but entry number [7] is Null. Therefore we have a total of 36 "cities" represented in this data.
+
+### **What is the most frequently occuring issue type? Hint: Use the table function.**
+
+
+```{r}
+table(service_data$issue_type)
+```
+
+```{r}
+summary(as.data.frame(service_data$issue_type))
+```
+
+The most frequently reported "issue_type" is PET ACCOUNT UPDATE:55455  
+
+### **Create a dataframe with the frequencies of each Ticket Status and their percentage from the whole. What percentage of tickets have a status of ‘CLOSED’? Name the columns and save the output as a csv titled ticket_status.csv**
+
+```{r}
+ticket_status <- as.data.frame(service_data$ticket_status)
+```
+
+```{r}
+tickets <- table(service_data$ticket_status) %>%
+as.data.frame()
+```
+
+```{r}
+colnames(tickets) <- c('Status', 'Count')
+```
+
+## Important: Check to see if it names the x,y axis.
+
+```{r}
+colnames(tickets)
+```
+
+```{r}
+summary(as.data.frame(service_data$ticket_status))
+```
+
+### **What % of tickets are CLOSED? 
+
+```{r}
+tickets$Percentage <- tickets$Count / sum(tickets$Count) *100
+```
+
+```{r}
+tickets
+```
+
+The % of tickets closed ~ about 96 %
+
+```{r}
+ticket_status <- write_csv(tickets, path = "ticket_status.csv")
+```
+
+##### The meat!
+You are the new manager on the 311 analysis team. You want your employees to look into tickets that were created over 30 days ago and are still open to ensure that they are being correctly classified and haven’t fallen through the cracks. You are going to create a new file with only the “overdue open tickets” so that they can be evaluated. Follow the steps below to create this new file.
+
+You’re going to leave your work documented in an R Notebook so that you can share it with your team and they can build on it as needed.
+
+### **1. Make sure your variables related to Dates are Date data types. If they aren’t, convert them to dates with the format month/day/year.**
+
+
+**Important:I need to change the data type of all the variables containing dates and times. Therefore, i need to go from a "factor" to the format of Month/Date/Year. Using the function as.Date(data set$ varibale we want to change, pipe "%m/%d/%y"). Repeat this process with all variables for consistency when using other functions.**
+
+```{r}
+tickets
+```
+
+```{r}
+sapply(tickets, class)
+```
+
+```{r}
+sapply(service_data, class)
+```
+
+### Notes: As you can see above... The three variables we need to observe are classified as characters when in fact they should be dates. I must convert each one of those variables using "as.Date()"
+
+```{r}
+service_data$ticket_created_date_time <- as.Date(service_data$ticket_created_date_time, "%m/%d/%Y")
+```
+## NEXT ONE...
+```{r}
+service_data$ticket_last_updated_date_time <- as.Date(service_data$ticket_last_updated_date_time, "%m/%d/%Y")
+```
+## LAST ONE...
+```{r}
+service_data$ticket_closed_date_time <- as.Date(service_data$ticket_closed_date_time, "%m/%d/%Y")
+```
+
+### **Create a new variable, open_30, with only tickets that are OPEN and were created more than 30 days ago.** 
+
+```{r}
+open_30 <- service_data[service_data$ticket_status == 'OPEN',]
+```
+
+## Note: Now that I have isolated the 'OPEN' tickets I need to remove the time stamp from the variable ticket_created_date_time using Sys.Date().
+
+```{r}
+open_30 <- service_data[service_data$ticket_status == 'OPEN' & service_data$ticket_created_date_time > Sys.Date() - 30,]
+```
+
+##Note: Sys.Date() without anything inside the parenthesis will always = todays date
+
+### **How many rows do you have in your new open_30 variable?**
+
+```{r}
+str(open_30)
+```
+
+There are 433 rows and 23 columns in the "open_30" data file.
+
+```{r}
+dim(open_30)
+```
+
+### ** We actually have a different number of days as a goal depending on the type of issue, and you decide that even though some tickets have been open for more than 30 days, if the goal is greater than 30 days, you won’t worry about those yet.**
+
+### **Create a new variable as part of your dataset for the number of days the ticket has been open.**
+
+```{r}
+unique(service_data$goal_days)
+```
+
+```{r}
+open_30$days_open <- as.integer(Sys.Date() - open_30$ticket_created_date_time)
+```
+
+```{r}
+head(open_30$days_open)
+```
+
+### **Create a new variable overdue and only keep the issues that are greater than 30 days and are over the goal days.**
+
+```{r}
+overdue <- open_30[open_30$days_open > open_30$goal_days,]
+```
+
+### **Write the overdue dataset to a new csv called Overdue_Tickets.csv**
+
+```{r}
+write_csv(overdue, path = "Overdue_tickets.csv")
+```
+
+### **How do the issue types in these overdue tickets compare to the entire list of issues?**
+
+```{r}
+issue_type2 <- table(overdue$issue_type) %>% as.data.frame()
+```
+```{r}
+issue_type2 <- issue_type2[order(-issue_type2$Freq),]
+```
+### ** Now call on issue_type & issue_type2
+```{r}
+issue_type2
+
+```
+
+When we first observed the issue_type within the entire data set "service_data" PET ACCOUNT UPSATE was the most frequently reported issue. Whe subset service_data to return only OPEN tickets that are over 30 days old in relation to the goal date overdue the most frequently reported issue_type is Stray/DOG AT LARGE with 188.
+
+
+
+
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
