@@ -168,6 +168,7 @@ caid_2010 <- country_aid %>%
 ```
 
 repeat the process using a different year. see example below.
+
 ```{r}
 aid_1960 <- regions_8 %>%
   filter(year == 1960) %>%
@@ -231,7 +232,6 @@ n_america_spread
 Task 1
 Now, go ahead and do the same thing for the countries in Sub Saharan Africa and save your final data frame into a variable with name of your choosing and print it out. Your results should look as follows:
 
-
 ```{r}
 africa_sub_saharan <- country_aid %>%
   filter(`Gapminder's 8 subregions` == 'africa_sub_saharan' & year %in% c(1960,2010)) %>%
@@ -243,15 +243,6 @@ africa_sub_saharan <- country_aid %>%
 africa_sub_saharan
 ```
 
-```{r}
-africa_sub_saharan <- africa_sub_saharan %>%
-  select(country, year, aid_in_mil) %>%
-  spread(year, aid_in_mil)
-```
-
-```{r}
-africa_sub_saharan
-```
 Task 2
 For Sub saharan Africa, there are a lot more countries that received more aid in 2010 than in 1960. Here we can make another column to help us better spot the difference in aid between these two years. Before we do that however, it’s a great time to note something particular about our column names – they are numbers. If you try to use mutate() and subtract the difference of the two columns you’ll notice you get 50 for the value in the entire column, and that’s not what we want! Check it out.
 
@@ -288,7 +279,7 @@ africansubsahara
 
 ```{r}
 america_south1 <- country_aid %>%
-  filter(`Gapminder's 8 subregions` == 'america_south' & year %in% c(1960,2010))  %>%
+  filter(`Gapminder's 8 subregions` == 'america_south' & year %in% c(1960,2010)) %>%
   select(country, year, aid_in_mil) %>%
   spread(year, aid_in_mil, fill = 0) %>% 
   mutate(diff = `2010` - `1960`) %>%
