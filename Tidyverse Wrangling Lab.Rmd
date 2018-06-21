@@ -1,0 +1,329 @@
+---
+title: "Tidyverse Wrangling Lab"
+author: "Michelle"
+date: "6/19/2018"
+output: html_document
+---
+
+##### Tidyverse Wrangling 
+
+Setup 
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(readxl)
+```
+
+```{r}
+excel_sheets("Aid received.xlsx")
+```
+
+```{r}
+excel_sheets("CountryMapping.xlsx")
+```
+
+```{r}
+aid <- read_excel("Aid received.xlsx", sheet = "Data")
+country_map <- read_excel("CountryMapping.xlsx", sheet = "Countries_etc")
+```
+
+```{r}
+glimpse(aid)
+```
+
+```{r}
+glimpse(country_map)
+```
+
+### Make Tidy 
+
+It looks like our aid data is organized in a ‘not-so-tidy’ way. Recall that for data to be considered tidy:
+
+Each variable must have its own column.
+Each observation must have its own row.
+Each value must have its own cell.
+We’ll use the gather() function to tidy it up!
+
+
+```{r}
+head(aid)
+```
+
+```{r}
+aid_tidy <- 
+  aid %>%
+  gather(key = 'year', value = 'aid', -`ODA received, total (constant 2010 US$)`, 
+         na.rm = TRUE)
+```
+
+```{r}
+head(aid_tidy)
+```
+
+### Clean it up a bit
+
+Right off the bat, I can see that my aid variable has values with lots of 0000’s (countries need a lot of money!). It’ll be easier to view this information in millions, so I’ll go ahead and use mutate to change this. I also want to rename ODA received, total(constant 2010 US$) to country, as it’ll be much easier to type!
+
+```{r}
+aid_clean <- 
+  aid_tidy %>%
+  mutate(aid_in_mil = aid / 1000000) %>%
+  rename(country = `ODA received, total (constant 2010 US$)`)
+```
+
+```{r}
+head(aid_clean)
+```
+
+For the country mapping dataset, country_map, I want to only keep the information on Gapminder’s region and subregion breakdown. For this particular analysis I am not interested in whether countries belong to the UN, G77 or their latitude and longitude. I’ll use the select() function to only keep my columns of interest. I’ll use the : to select from Gapminder's 4 world regions to Gapminder's 6 world regions.
+
+```{r}
+country_clean <- country_map %>%
+  select(name, `Gapminder's 4 world regions`:`Gapminder's 6 world regions`)
+```
+
+```{r}
+head(country_clean)
+```
+
+Now compare the clean data with the original data below. 
+
+```{r}
+head(country_map)
+```
+
+### Join Data
+
+Dplyr has some functions that work like SQL! They allow you to join different datasets. We’ll use the inner_join() function to combine both of these datasets on the name of the countries.
+
+```{r}
+country_aid <- aid_clean %>%
+  inner_join(country_clean, by=c('country' = 'name'))
+```
+
+```{r}
+head(country_aid)
+```
+
+```{r}
+tail(country_aid)
+```
+
+### Group data
+Now, another very useful function that dplyr has is the group_by() function. It allows you to group a dataset based on the values of a specific column. The resulting data frame won’t look any different than the original, but when summarizing functions are applied, it’ll return the summary grouped along that specific value, rather than the summary of the entire column. Let’s create 3 new data frames: regions_4, regions_6, and regions_8. We’ll group country_aid on Gapminder’s 4 world regions, 6 world regions, and 8 subregions respectively.
+
+```{r}
+regions_4 <- 
+  country_aid %>%
+  group_by(`Gapminder's 4 world regions`)
+
+regions_6 <- 
+  country_aid %>%
+  group_by(`Gapminder's 6 world regions`)
+
+regions_8 <-
+  country_aid %>%
+  group_by(`Gapminder's 8 subregions`)
+```
+
+
+```{r}
+regions_8
+```
+
+
+
+```{r}
+country_aid %>% 
+  filter(year == 2010) %>%
+  arrange(aid_in_mil)
+```
+
+
+```{r}
+country_aid %>% 
+  filter(year == 2010) %>%
+  arrange(desc(aid_in_mil))
+```
+
+
+```{r}
+aid_2010 <- regions_8 %>%
+  filter(year == 2010) %>%
+  summarise(y2010 = sum(aid_in_mil)) %>%
+  arrange(y2010)
+```
+
+```{r}
+aid_2010
+```
+
+```{r}
+caid_2010 <- country_aid %>%
+  filter(year == 2010) %>%
+  summarise(y2010 = sum(aid_in_mil)) %>%
+  arrange(y2010)
+```
+
+repeat the process using a different year. see example below.
+```{r}
+aid_1960 <- regions_8 %>%
+  filter(year == 1960) %>%
+  summarise(y1960 = sum(aid_in_mil)) %>%
+  arrange(y1960)
+```
+
+```{r}
+aid_1960
+```
+
+
+```{r}
+aid_diff <- inner_join(aid_1960, aid_2010, 
+                       by= c("Gapminder's 8 subregions"=
+                               "Gapminder's 8 subregions")) %>%
+  mutate(diff = y2010 - y1960) %>%
+  arrange(diff)
+```
+
+
+```{r}
+aid_diff
+```
+
+whats the % diff???
+
+```{r}
+aid_diff <- aid_diff %>%
+  mutate(percent_diff = round(((y2010 - y1960)/y1960)*100, 2)) %>%
+  arrange(desc(percent_diff))
+```
+
+```{r}
+aid_diff
+```
+Now that we know that North America has had the biggest change in Aid received percentage wise, I’m interested in seeing which of the countries in North America had the biggest impact on that number.
+
+```{r}
+north_america <- country_aid %>%
+  filter(`Gapminder's 8 subregions` == 'america_north' & year %in% c(1960,2010))
+```
+
+```{r}
+north_america
+```
+
+Again, here it’s not so easy to compare change from 1960 to 2010. Another way to easily change the structure of this data is to use the spread() function after already having grouped it by subregion.
+
+```{r}
+n_america_spread <- north_america %>%
+  select(country, year, aid_in_mil) %>%
+  spread(year, aid_in_mil)
+```
+
+```{r}
+n_america_spread
+```
+### Practice
+
+Task 1
+Now, go ahead and do the same thing for the countries in Sub Saharan Africa and save your final data frame into a variable with name of your choosing and print it out. Your results should look as follows:
+
+
+```{r}
+africa_sub_saharan <- country_aid %>%
+  filter(`Gapminder's 8 subregions` == 'africa_sub_saharan' & year %in% c(1960,2010)) %>%
+  select(country, year, aid_in_mil) %>%
+  spread(year, aid_in_mil)
+```
+
+```{r}
+africa_sub_saharan
+```
+
+```{r}
+africa_sub_saharan <- africa_sub_saharan %>%
+  select(country, year, aid_in_mil) %>%
+  spread(year, aid_in_mil)
+```
+
+```{r}
+africa_sub_saharan
+```
+Task 2
+For Sub saharan Africa, there are a lot more countries that received more aid in 2010 than in 1960. Here we can make another column to help us better spot the difference in aid between these two years. Before we do that however, it’s a great time to note something particular about our column names – they are numbers. If you try to use mutate() and subtract the difference of the two columns you’ll notice you get 50 for the value in the entire column, and that’s not what we want! Check it out.
+
+```{r}
+sub_africa_diff <- africa_sub_saharan %>%
+  mutate(diff = `2010` - `1960`) %>%
+  arrange(desc(diff))
+```
+
+```{r}
+sub_africa_diff
+```
+
+
+Task 3
+Rerun the code you used to create the dataframe in Task 1 but add the fill = argument to the spread() function and set it equal to 0.
+
+```{r}
+africansubsahara <- country_aid %>%
+  filter(`Gapminder's 8 subregions` == 'africa_sub_saharan' & year %in% c(1960,2010))  %>%
+  select(country, year, aid_in_mil) %>%
+  spread(year, aid_in_mil, fill = 0) %>% 
+  mutate(diff = `2010` - `1960`) %>%
+  arrange(desc(diff))
+```
+
+```{r}
+africansubsahara
+```
+
+
+
+#### HW 
+
+```{r}
+america_south1 <- country_aid %>%
+  filter(`Gapminder's 8 subregions` == 'america_south' & year %in% c(1960,2010))  %>%
+  select(country, year, aid_in_mil) %>%
+  spread(year, aid_in_mil, fill = 0) %>% 
+  mutate(diff = `2010` - `1960`) %>%
+  arrange(desc(diff))
+```
+
+```{r}
+america_south1
+```
+
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
